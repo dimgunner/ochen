@@ -1,0 +1,1392 @@
+{
+  "version": 1,
+  "variants": [
+    {
+      "assetId": "cveti",
+      "name": "Цветы",
+      "synonyms": [
+        "flowers",
+        "весна",
+        "декор",
+        "декорация",
+        "красота",
+        "подарок",
+        "природа",
+        "цветок",
+        "цветы"
+      ],
+      "tags": [
+        "decoration",
+        "nature",
+        "весна",
+        "декор",
+        "красота",
+        "подарок",
+        "природа",
+        "цветок",
+        "цветы"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/cveti.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#AA9BF0": "background",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#AA9BF0",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 324.0,
+      "height": 409.0
+    },
+    {
+      "assetId": "ruchka",
+      "name": "Ручка",
+      "synonyms": [
+        "pen",
+        "блокнот",
+        "документ",
+        "заметка",
+        "занятие",
+        "запись",
+        "конспект",
+        "образование",
+        "обучение",
+        "писать",
+        "письмо",
+        "подпись",
+        "ручка",
+        "студент",
+        "урок",
+        "учеба",
+        "учение",
+        "учиться",
+        "учёба",
+        "чернила",
+        "школа"
+      ],
+      "tags": [
+        "education",
+        "writing",
+        "блокнот",
+        "документ",
+        "заметка",
+        "занятие",
+        "запись",
+        "конспект",
+        "образование",
+        "обучение",
+        "письмо",
+        "подпись",
+        "студент",
+        "урок",
+        "учеба",
+        "учение",
+        "учиться",
+        "учёба",
+        "чернила",
+        "школа"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/ruchka.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9A3AA": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9A3AA"
+      ],
+      "width": 255.0,
+      "height": 143.0
+    },
+    {
+      "assetId": "naushniki",
+      "name": "Наушники",
+      "synonyms": [
+        "headphones",
+        "аудио",
+        "гаджет",
+        "диджитал",
+        "звук",
+        "музыка",
+        "наушники",
+        "плеер",
+        "подкаст",
+        "слушать",
+        "техника",
+        "технологии",
+        "технология",
+        "устройство",
+        "цифровой"
+      ],
+      "tags": [
+        "music",
+        "technology",
+        "аудио",
+        "гаджет",
+        "диджитал",
+        "звук",
+        "музыка",
+        "наушники",
+        "плеер",
+        "подкаст",
+        "техника",
+        "технологии",
+        "технология",
+        "устройство",
+        "цифровой"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/naushniki.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5"
+      ],
+      "width": 445.0,
+      "height": 346.0
+    },
+    {
+      "assetId": "kniga",
+      "name": "Книга",
+      "synonyms": [
+        "book",
+        "библиотека",
+        "знание",
+        "знания",
+        "книга",
+        "книги",
+        "курс",
+        "лекция",
+        "образование",
+        "обучение",
+        "студент",
+        "учеба",
+        "учебник",
+        "учение",
+        "учиться",
+        "учёба",
+        "чтение",
+        "школа",
+        "экзамен"
+      ],
+      "tags": [
+        "education",
+        "knowledge",
+        "библиотека",
+        "знание",
+        "книга",
+        "курс",
+        "лекция",
+        "образование",
+        "обучение",
+        "студент",
+        "учеба",
+        "учебник",
+        "учение",
+        "учиться",
+        "учёба",
+        "чтение",
+        "школа",
+        "экзамен"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/kniga.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 723.0,
+      "height": 489.0
+    },
+    {
+      "assetId": "telefon",
+      "name": "Телефон",
+      "synonyms": [
+        "phone",
+        "гаджет",
+        "диджитал",
+        "звонок",
+        "интернет",
+        "коммуникация",
+        "мессенджер",
+        "мобильный",
+        "приложение",
+        "связь",
+        "смартфон",
+        "сообщение",
+        "телефон",
+        "техника",
+        "технологии",
+        "технология",
+        "устройство",
+        "цифровой"
+      ],
+      "tags": [
+        "communication",
+        "technology",
+        "гаджет",
+        "диджитал",
+        "интернет",
+        "коммуникация",
+        "мессенджер",
+        "мобильный",
+        "приложение",
+        "связь",
+        "телефон",
+        "техника",
+        "технологии",
+        "технология",
+        "устройство",
+        "цифровой"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/telefon.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#7864D7": "background",
+        "#D7CDF5": "background",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#7864D7",
+        "#D7CDF5",
+        "#F9ECB0"
+      ],
+      "width": 399.0,
+      "height": 231.0
+    },
+    {
+      "assetId": "papka",
+      "name": "Папка",
+      "synonyms": [
+        "folder",
+        "архив",
+        "документ",
+        "документы",
+        "отчет",
+        "отчёт",
+        "офис",
+        "папка",
+        "проект",
+        "работа",
+        "файл"
+      ],
+      "tags": [
+        "documents",
+        "office",
+        "архив",
+        "документ",
+        "документы",
+        "отчет",
+        "отчёт",
+        "офис",
+        "папка",
+        "проект",
+        "работа",
+        "файл"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/papka.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9ECB0"
+      ],
+      "width": 621.0,
+      "height": 330.0,
+      "backgroundFor": [
+        "финансы",
+        "деньги",
+        "бюджет",
+        "отчёт",
+        "отчет",
+        "оплата",
+        "документы"
+      ]
+    },
+    {
+      "assetId": "moneta",
+      "name": "Монета",
+      "synonyms": [
+        "coin",
+        "бюджет",
+        "валюта",
+        "деньги",
+        "доход",
+        "заработок",
+        "инвестиции",
+        "монета",
+        "монеты",
+        "оплата",
+        "прибыль",
+        "рубль",
+        "цена"
+      ],
+      "tags": [
+        "finance",
+        "money",
+        "бюджет",
+        "деньги",
+        "доход",
+        "заработок",
+        "инвестиции",
+        "монеты",
+        "оплата",
+        "прибыль",
+        "рубль",
+        "финансы",
+        "цена"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/moneta.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9ECB0"
+      ],
+      "width": 153.0,
+      "height": 101.0
+    },
+    {
+      "assetId": "pazly",
+      "name": "Пазлы",
+      "synonyms": [
+        "puzzle",
+        "головоломка",
+        "задача",
+        "пазл",
+        "пазлы",
+        "проблема",
+        "решение",
+        "сложность"
+      ],
+      "tags": [
+        "idea",
+        "puzzle",
+        "головоломка",
+        "задача",
+        "пазл",
+        "пазлы",
+        "проблема",
+        "решение"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/pazly.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 273.0,
+      "height": 157.0
+    },
+    {
+      "assetId": "lampa",
+      "name": "Лампа",
+      "synonyms": [
+        "idea",
+        "light",
+        "вдохновение",
+        "идея",
+        "инновации",
+        "инновация",
+        "лампа",
+        "мысль",
+        "новое",
+        "озарение",
+        "свет",
+        "стартап"
+      ],
+      "tags": [
+        "idea",
+        "technology",
+        "вдохновение",
+        "идея",
+        "инновации",
+        "инновация",
+        "лампа",
+        "мысль",
+        "озарение",
+        "свет",
+        "стартап"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/lampa.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 473.0,
+      "height": 565.0,
+      "backgroundFor": [
+        "технологии",
+        "технология",
+        "техника",
+        "устройство",
+        "инновации",
+        "идеи"
+      ]
+    },
+    {
+      "assetId": "koshchelek",
+      "name": "Кошелек",
+      "synonyms": [
+        "wallet",
+        "бюджет",
+        "деньги",
+        "доход",
+        "заработок",
+        "инвестиции",
+        "кошелек",
+        "кошелёк",
+        "оплата",
+        "платеж",
+        "платёж",
+        "покупка",
+        "рубль",
+        "финансы"
+      ],
+      "tags": [
+        "finance",
+        "money",
+        "бюджет",
+        "деньги",
+        "доход",
+        "заработок",
+        "инвестиции",
+        "кошелёк",
+        "оплата",
+        "покупка",
+        "рубль",
+        "финансы"
+      ],
+      "size": "S",
+      "state": "main",
+      "path": "svg/size_s/main/koshchelek.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9ECB0"
+      ],
+      "width": 316.0,
+      "height": 199.0
+    },
+    {
+      "assetId": "cveti",
+      "name": "Цветы",
+      "synonyms": [
+        "цветы",
+        "flowers"
+      ],
+      "tags": [
+        "nature",
+        "decoration"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/cveti.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 324.0,
+      "height": 409.0
+    },
+    {
+      "assetId": "ruchka",
+      "name": "Ручка",
+      "synonyms": [
+        "ручка",
+        "pen"
+      ],
+      "tags": [
+        "education",
+        "writing"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/ruchka.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 255.0,
+      "height": 143.0
+    },
+    {
+      "assetId": "naushniki",
+      "name": "Наушники",
+      "synonyms": [
+        "наушники",
+        "headphones"
+      ],
+      "tags": [
+        "music",
+        "technology"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/naushniki.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 445.0,
+      "height": 346.0
+    },
+    {
+      "assetId": "kniga",
+      "name": "Книга",
+      "synonyms": [
+        "книга",
+        "book"
+      ],
+      "tags": [
+        "education",
+        "knowledge"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/kniga.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 723.0,
+      "height": 489.0
+    },
+    {
+      "assetId": "telefon",
+      "name": "Телефон",
+      "synonyms": [
+        "телефон",
+        "phone"
+      ],
+      "tags": [
+        "technology",
+        "communication"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/telefon.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 399.0,
+      "height": 231.0
+    },
+    {
+      "assetId": "papka",
+      "name": "Папка",
+      "synonyms": [
+        "папка",
+        "folder"
+      ],
+      "tags": [
+        "documents",
+        "office"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/papka.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 621.0,
+      "height": 330.0
+    },
+    {
+      "assetId": "moneta",
+      "name": "Монета",
+      "synonyms": [
+        "монета",
+        "coin"
+      ],
+      "tags": [
+        "finance",
+        "money"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/moneta.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 153.0,
+      "height": 101.0
+    },
+    {
+      "assetId": "pazly",
+      "name": "Пазлы",
+      "synonyms": [
+        "пазлы",
+        "puzzle"
+      ],
+      "tags": [
+        "puzzle",
+        "idea"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/pazly.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 273.0,
+      "height": 157.0
+    },
+    {
+      "assetId": "lampa",
+      "name": "Лампа",
+      "synonyms": [
+        "лампа",
+        "idea",
+        "light"
+      ],
+      "tags": [
+        "idea",
+        "technology"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/lampa.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 473.0,
+      "height": 565.0
+    },
+    {
+      "assetId": "koshchelek",
+      "name": "Кошелек",
+      "synonyms": [
+        "кошелек",
+        "кошелёк",
+        "wallet"
+      ],
+      "tags": [
+        "finance",
+        "money"
+      ],
+      "size": "S",
+      "state": "background",
+      "path": "svg/size_s/background/koshchelek.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 316.0,
+      "height": 199.0
+    },
+    {
+      "assetId": "cveti",
+      "name": "Цветы",
+      "synonyms": [
+        "цветы",
+        "flowers"
+      ],
+      "tags": [
+        "nature",
+        "decoration"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/cveti.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#AA9BF0": "background",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#AA9BF0",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 591.0,
+      "height": 748.0
+    },
+    {
+      "assetId": "ruchka",
+      "name": "Ручка",
+      "synonyms": [
+        "pen",
+        "занятие",
+        "образование",
+        "обучение",
+        "ручка",
+        "студент",
+        "урок",
+        "учеба",
+        "учение",
+        "учиться",
+        "учёба",
+        "школа"
+      ],
+      "tags": [
+        "education",
+        "writing",
+        "занятие",
+        "образование",
+        "обучение",
+        "студент",
+        "урок",
+        "учеба",
+        "учение",
+        "учиться",
+        "учёба",
+        "школа"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/ruchka.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 509.0,
+      "height": 286.0
+    },
+    {
+      "assetId": "naushniki",
+      "name": "Наушники",
+      "synonyms": [
+        "наушники",
+        "headphones"
+      ],
+      "tags": [
+        "music",
+        "technology"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/naushniki.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9ECB0"
+      ],
+      "width": 889.0,
+      "height": 692.0
+    },
+    {
+      "assetId": "kniga",
+      "name": "Книга",
+      "synonyms": [
+        "книга",
+        "book"
+      ],
+      "tags": [
+        "education",
+        "knowledge"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/kniga.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object",
+        "#FFE3E1": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9A3AA",
+        "#F9ECB0",
+        "#FFE3E1"
+      ],
+      "width": 1446.0,
+      "height": 977.0
+    },
+    {
+      "assetId": "telefon",
+      "name": "Телефон",
+      "synonyms": [
+        "телефон",
+        "phone"
+      ],
+      "tags": [
+        "technology",
+        "communication"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/telefon.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#7864D7": "background",
+        "#D7CDF5": "background",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#7864D7",
+        "#D7CDF5",
+        "#F9ECB0"
+      ],
+      "width": 797.0,
+      "height": 462.0
+    },
+    {
+      "assetId": "papka",
+      "name": "Папка",
+      "synonyms": [
+        "папка",
+        "folder"
+      ],
+      "tags": [
+        "documents",
+        "office"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/papka.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 1241.0,
+      "height": 659.0,
+      "backgroundFor": [
+        "финансы",
+        "деньги",
+        "бюджет",
+        "отчёт",
+        "отчет",
+        "оплата",
+        "документы"
+      ]
+    },
+    {
+      "assetId": "moneta",
+      "name": "Монета",
+      "synonyms": [
+        "монета",
+        "coin"
+      ],
+      "tags": [
+        "finance",
+        "money"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/moneta.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9ECB0"
+      ],
+      "width": 287.0,
+      "height": 189.0
+    },
+    {
+      "assetId": "pazly",
+      "name": "Пазлы",
+      "synonyms": [
+        "пазлы",
+        "puzzle"
+      ],
+      "tags": [
+        "puzzle",
+        "idea"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/pazly.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 545.0,
+      "height": 314.0
+    },
+    {
+      "assetId": "lampa",
+      "name": "Лампа",
+      "synonyms": [
+        "idea",
+        "light",
+        "лампа"
+      ],
+      "tags": [
+        "idea",
+        "technology"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/lampa.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9A3AA": "object",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9A3AA",
+        "#F9ECB0"
+      ],
+      "width": 946.0,
+      "height": 1129.0,
+      "backgroundFor": [
+        "технологии",
+        "технология",
+        "техника",
+        "устройство",
+        "инновации",
+        "идеи"
+      ]
+    },
+    {
+      "assetId": "koshchelek",
+      "name": "Кошелек",
+      "synonyms": [
+        "кошелек",
+        "кошелёк",
+        "wallet"
+      ],
+      "tags": [
+        "finance",
+        "money"
+      ],
+      "size": "L",
+      "state": "main",
+      "path": "svg/size_l/main/koshchelek.svg",
+      "colorRoles": {
+        "#181817": "neutral",
+        "#D7CDF5": "background",
+        "#F9ECB0": "object"
+      },
+      "colors": [
+        "#181817",
+        "#D7CDF5",
+        "#F9ECB0"
+      ],
+      "width": 631.0,
+      "height": 397.0
+    },
+    {
+      "assetId": "cveti",
+      "name": "Цветы",
+      "synonyms": [
+        "цветы",
+        "flowers"
+      ],
+      "tags": [
+        "nature",
+        "decoration"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/cveti.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 591.0,
+      "height": 748.0
+    },
+    {
+      "assetId": "ruchka",
+      "name": "Ручка",
+      "synonyms": [
+        "ручка",
+        "pen"
+      ],
+      "tags": [
+        "education",
+        "writing"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/ruchka.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 509.0,
+      "height": 286.0
+    },
+    {
+      "assetId": "naushniki",
+      "name": "Наушники",
+      "synonyms": [
+        "наушники",
+        "headphones"
+      ],
+      "tags": [
+        "music",
+        "technology"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/naushniki.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 889.0,
+      "height": 692.0
+    },
+    {
+      "assetId": "kniga",
+      "name": "Книга",
+      "synonyms": [
+        "книга",
+        "book"
+      ],
+      "tags": [
+        "education",
+        "knowledge"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/kniga.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 1446.0,
+      "height": 977.0
+    },
+    {
+      "assetId": "telefon",
+      "name": "Телефон",
+      "synonyms": [
+        "телефон",
+        "phone"
+      ],
+      "tags": [
+        "technology",
+        "communication"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/telefon.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 797.0,
+      "height": 462.0
+    },
+    {
+      "assetId": "papka",
+      "name": "Папка",
+      "synonyms": [
+        "папка",
+        "folder"
+      ],
+      "tags": [
+        "documents",
+        "office"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/papka.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 1241.0,
+      "height": 659.0
+    },
+    {
+      "assetId": "moneta",
+      "name": "Монета",
+      "synonyms": [
+        "монета",
+        "coin"
+      ],
+      "tags": [
+        "finance",
+        "money"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/moneta.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 287.0,
+      "height": 189.0
+    },
+    {
+      "assetId": "pazly",
+      "name": "Пазлы",
+      "synonyms": [
+        "пазлы",
+        "puzzle"
+      ],
+      "tags": [
+        "puzzle",
+        "idea"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/pazly.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 545.0,
+      "height": 314.0
+    },
+    {
+      "assetId": "lampa",
+      "name": "Лампа",
+      "synonyms": [
+        "лампа",
+        "idea",
+        "light"
+      ],
+      "tags": [
+        "idea",
+        "technology"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/lampa.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 946.0,
+      "height": 1129.0
+    },
+    {
+      "assetId": "koshchelek",
+      "name": "Кошелек",
+      "synonyms": [
+        "кошелек",
+        "кошелёк",
+        "wallet"
+      ],
+      "tags": [
+        "finance",
+        "money"
+      ],
+      "size": "L",
+      "state": "background",
+      "path": "svg/size_l/background/koshchelek.svg",
+      "colorRoles": {
+        "#7864D7": "background",
+        "#D7CDF5": "background"
+      },
+      "colors": [
+        "#7864D7",
+        "#D7CDF5"
+      ],
+      "width": 631.0,
+      "height": 397.0
+    }
+  ],
+  "palettes": {
+    "purple": {
+      "background": [
+        "#D7CDF5",
+        "#AA9BF0",
+        "#7864D7",
+        "#181817"
+      ],
+      "object": [
+        "#F9ECB0",
+        "#F9A3AA",
+        "#FFE3E1",
+        "#FFFFFF"
+      ]
+    },
+    "warm": {
+      "background": [
+        "#FDD7B9",
+        "#FAC896",
+        "#D27532",
+        "#181817"
+      ],
+      "object": [
+        "#F9ECB0",
+        "#80DADA",
+        "#BEEBEB",
+        "#FFFFFF"
+      ]
+    },
+    "aqua": {
+      "background": [
+        "#BEEBEB",
+        "#80DADA",
+        "#5ABEBE",
+        "#181817"
+      ],
+      "object": [
+        "#FFD4F2",
+        "#6D7BFC",
+        "#B6C6FE",
+        "#FFFFFF"
+      ]
+    }
+  },
+  "defaultBackground": "cveti"
+}

@@ -1,0 +1,7 @@
+{
+  "builtIn": [
+    {"id": "purple", "name": "Purple", "background": ["#D7CDF5","#AA9BF0","#7864D7","#181817"], "object": ["#F9ECB0","#F9A3AA","#FFE3E1","#FFFFFF"]},
+    {"id": "warm", "name": "Warm", "background": ["#FDD7B9","#FAC896","#D27532","#181817"], "object": ["#F9ECB0","#80DADA","#BEEBEB","#FFFFFF"]},
+    {"id": "aqua", "name": "Aqua", "background": ["#BEEBEB","#80DADA","#5ABEBE","#181817"], "object": ["#FFD4F2","#6D7BFC","#B6C6FE","#FFFFFF"]}
+  ]
+}
