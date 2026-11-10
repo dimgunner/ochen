@@ -52,7 +52,7 @@ jobs:
           DJANGO_DEBUG: "1"
           DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
         run: |
-          python manage.py migrate --noinput
+          python manage.py check
           python manage.py runserver 127.0.0.1:8000 &
           for i in $(seq 1 60); do
             curl -fsS http://127.0.0.1:8000/api/health/ && break
