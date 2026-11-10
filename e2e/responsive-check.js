@@ -8,8 +8,6 @@
  * desktop and mobile viewports, in Chromium and Firefox.
  */
 
-const path = require('path');
-
 const BASE_URL = process.argv[2] || 'http://localhost:8000/';
 
 const VIEWPORTS = [
@@ -18,17 +16,16 @@ const VIEWPORTS = [
   { name: 'desktop-1280', width: 1280, height: 800 },
 ];
 
-/** Resolve browser binaries, allowing an override via env. */
+/** Optional browser binary overrides; Playwright's own lookup is the default. */
 function executables() {
-  const root = process.env.PLAYWRIGHT_BROWSERS_PATH || '/root/.cache/ms-playwright';
   return {
-    chromium: process.env.CHROMIUM_PATH || path.join(root, 'chromium-1226', 'chrome-linux64', 'chrome'),
-    firefox: process.env.FIREFOX_PATH || path.join(root, 'firefox-1530', 'firefox', 'firefox'),
+    chromium: process.env.CHROMIUM_PATH || null,
+    firefox: process.env.FIREFOX_PATH || null,
   };
 }
 
 async function check(browserType, label, execPath) {
-  const browser = await browserType.launch({ executablePath: execPath });
+  const browser = await browserType.launch(execPath ? { executablePath: execPath } : {});
   const results = [];
 
   for (const vp of VIEWPORTS) {
@@ -101,6 +98,7 @@ function verify(r) {
   if (r.innerWidth <= 820) {
     if (r.flexDirection !== 'column') problems.push('mobile layout is not stacked');
     if (r.buttonH < 28) problems.push('touch targets too small: ' + r.buttonH);
+    if (r.canvasW > r.innerWidth) problems.push('canvas is wider than the viewport: ' + r.canvasW);
   } else if (r.flexDirection !== 'row') {
     problems.push('desktop layout is not side by side');
   }

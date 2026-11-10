@@ -36,44 +36,91 @@ const Layout = (typeof globalThis !== 'undefined' ? globalThis : window).Layout 
   scale: 1,
 
   /**
-   * Uniform factor needed to fit the given objects into the format.
+   * Build one arrangement candidate with the given number of columns.
    *
-   * The factor accounts for the whole row of main objects, not for each
-   * object on its own, so a set of objects stays side by side after the
-   * composition is scaled.
+   * Items are placed row-major. The candidate records the required scale
+   * and the row layout; the actual coordinates are produced by place().
+   */
+  mainPlanForColumns(items, format, columns) {
+    const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
+    const cols = Math.max(1, Math.min(columns, items.length));
+    const rows = [];
+    for (let i = 0; i < items.length; i += cols) {
+      rows.push(items.slice(i, i + cols));
+    }
+
+    const gap = Layout.GAP;
+    const metrics = rows.map(row => {
+      const width = row.reduce((sum, item) => sum + item.w, 0) +
+        gap * Math.max(0, row.length - 1);
+      const height = row.reduce((max, item) => Math.max(max, item.h), 0);
+      return { width, height };
+    });
+    const maxWidth = metrics.reduce((max, m) => Math.max(max, m.width), 0);
+    const totalHeight = metrics.reduce((sum, m) => sum + m.height, 0) +
+      gap * Math.max(0, rows.length - 1);
+
+    const usableW = Math.max(1, f.w - Layout.MARGIN * 2);
+    const usableH = Math.max(1, f.h - Layout.MARGIN * 2);
+    const scale = Math.min(usableW / maxWidth, usableH / totalHeight, 1);
+
+    return { columns: cols, rows, metrics, maxWidth, totalHeight, scale };
+  },
+
+  /**
+   * Choose the best arrangement for the current set of main objects.
+   *
+   * Tries every column count from a single column to a single row and picks
+   * the arrangement that needs the largest (least destructive) scale.
+   * Rotation-aware boxes are used so manually rotated objects are not
+   * under-estimated.
+   */
+  planMain(instances, format, getSize) {
+    const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
+    const mains = instances.filter(i => i.role === 'main');
+    const items = mains.map(inst => {
+      const size = getSize(inst);
+      if (!size) return null;
+      const box = Layout.bbox(0, 0, size.w, size.h, inst.rotation || 0);
+      return { inst, w: box.w, h: box.h };
+    }).filter(Boolean);
+
+    if (!items.length) {
+      return { columns: 0, rows: [], metrics: [], maxWidth: 0, totalHeight: 0, scale: 1 };
+    }
+
+    const aspect = f.w / f.h;
+    const candidates = [];
+    for (let columns = 1; columns <= items.length; columns++) {
+      candidates.push(Layout.mainPlanForColumns(items, format, columns));
+    }
+
+    const preference = (plan) => {
+      if (aspect > 1.3) return plan.columns;
+      if (aspect < 0.77) return plan.rows.length;
+      return -plan.rows.length;
+    };
+
+    candidates.sort((a, b) => {
+      if (Math.abs(a.scale - b.scale) > 1e-9) return b.scale - a.scale;
+      const prefA = preference(a);
+      const prefB = preference(b);
+      if (prefA !== prefB) return prefB - prefA;
+      return b.columns - a.columns;
+    });
+
+    return candidates[0];
+  },
+
+  /**
+   * Uniform factor needed to fit the chosen arrangement into the format.
    *
    * Returns 1 when everything already fits.
    */
   computeScale(instances, format, getSize) {
-    const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
-    const usableW = f.w - Layout.MARGIN * 2;
-    const usableH = f.h - Layout.MARGIN * 2;
-
-    const mains = instances.filter(i => i.role === 'main');
-    if (!mains.length) return 1;
-
-    // A row of main objects: their widths add up, separated by gaps.
-    // The gap scales together with the composition, so the row width is
-    //   scale * (sum of widths + gap * (count - 1))
-    // and the scale follows from that expression.
-    const gapTotal = Layout.GAP * Math.max(0, mains.length - 1);
-    let widths = 0;
-    let maxH = 0;
-    for (const inst of mains) {
-      const size = getSize(inst);
-      if (!size) continue;
-      widths += size.w;
-      maxH = Math.max(maxH, size.h);
-    }
-    if (!widths || !maxH) return 1;
-
-    const rowWidth = widths + gapTotal;
-    const byWidth = usableW / rowWidth;
-    const byHeight = usableH / maxH;
-    const need = Math.min(byWidth, byHeight);
-
-    // Never scale up: objects keep their intrinsic size when they already fit.
-    return need < 1 ? Math.max(0.05, need) : 1;
+    const scale = Layout.planMain(instances, format, getSize).scale;
+    // Never scale up: objects keep their intrinsic size when they fit.
+    return scale < 1 ? Math.max(0.05, scale) : 1;
   },
 
   /**
@@ -99,6 +146,37 @@ const Layout = (typeof globalThis !== 'undefined' ? globalThis : window).Layout 
     return box.x >= 0 && box.y >= 0 &&
            box.x + box.w <= f.w + 0.5 &&
            box.y + box.h <= f.h + 0.5;
+  },
+
+  /**
+   * Clamp an object's position so its rotated box stays inside the canvas.
+   *
+   * Returns the corrected top-left position. Objects larger than the canvas
+   * cannot be made to fit; they are centred so the overflow is symmetric.
+   */
+  clampToCanvas(x, y, width, height, rotationDeg, format) {
+    const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
+    const box = Layout.bbox(x, y, width, height, rotationDeg);
+    let dx = 0;
+    let dy = 0;
+
+    if (box.w >= f.w) {
+      dx = (f.w - box.w) / 2 - box.x;
+    } else if (box.x < 0) {
+      dx = -box.x;
+    } else if (box.x + box.w > f.w) {
+      dx = f.w - (box.x + box.w);
+    }
+
+    if (box.h >= f.h) {
+      dy = (f.h - box.h) / 2 - box.y;
+    } else if (box.y < 0) {
+      dy = -box.y;
+    } else if (box.y + box.h > f.h) {
+      dy = f.h - (box.y + box.h);
+    }
+
+    return { x: x + dx, y: y + dy };
   },
 
   /** Overlap area of two boxes. */
@@ -127,23 +205,20 @@ const Layout = (typeof globalThis !== 'undefined' ? globalThis : window).Layout 
    */
   checkFit(instances, format, getSize) {
     const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
-    const scale = Layout.computeScale(instances, format, getSize);
-
+    const plan = Layout.planMain(instances, format, getSize);
     const mains = instances.filter(i => i.role === 'main');
-    // Same formula as computeScale: the row width is the sum of the scaled
-    // object widths plus the scaled gaps.
-    let totalW = Layout.GAP * scale * Math.max(0, mains.length - 1);
-    let maxH = 0;
-    for (const inst of mains) {
-      const size = getSize(inst);
-      if (!size) continue;
-      totalW += size.w * scale;
-      maxH = Math.max(maxH, size.h * scale);
+
+    if (!plan.rows.length) {
+      return { ok: true, reason: '', scale: 1 };
     }
+
+    const scale = Math.min(1, Math.max(0.05, plan.scale));
     const usableW = f.w - Layout.MARGIN * 2;
     const usableH = f.h - Layout.MARGIN * 2;
+    const totalW = plan.maxWidth * scale;
+    const totalH = plan.totalHeight * scale;
 
-    if (totalW > usableW + 0.5 || maxH > usableH + 0.5) {
+    if (totalW > usableW + 0.5 || totalH > usableH + 0.5) {
       const names = mains.map(i => i.name + ' (' + i.size + ')').join(', ');
       return {
         ok: false,
@@ -189,6 +264,73 @@ const Layout = (typeof globalThis !== 'undefined' ? globalThis : window).Layout 
   },
 
   /**
+   * Find a free position for one new object without moving existing ones.
+   *
+   * This is used when the user adds an object manually: the current
+   * composition is preserved and only the new object is positioned.
+   * Returns null when no free spot exists at the current composition scale.
+   */
+  placeNew(inst, instances, format, getSize, scale) {
+    const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
+    const k = scale || 1;
+    const size = getSize(inst);
+    if (!size) return null;
+
+    const w = size.w * k;
+    const h = size.h * k;
+    const margin = Layout.MARGIN;
+
+    if (inst.role === 'background') {
+      // Background objects may overlap and be cropped; place them along the
+      // bottom edge, offset from the already present background layers.
+      let x = margin;
+      for (const other of instances) {
+        if (other.role !== 'background') continue;
+        const otherSize = getSize(other);
+        if (otherSize) x += Math.round(otherSize.w * k * 0.75);
+      }
+      x = Math.min(x, Math.max(margin, f.w - w));
+      return { x, y: Math.max(0, f.h - h), rotation: 0 };
+    }
+
+    const existingMains = instances.filter(i => i.role === 'main');
+    if (!existingMains.length) {
+      return {
+        x: Math.max(margin, Math.round((f.w - w) / 2)),
+        y: Math.max(margin, Math.round((f.h - h) / 2)),
+        rotation: 0,
+      };
+    }
+
+    const existingBoxes = existingMains.map(i => {
+      const s = getSize(i);
+      return s ? Layout.bbox(i.x, i.y, s.w * k, s.h * k, i.rotation || 0) : null;
+    }).filter(Boolean);
+
+    // Search a grid of candidate positions, closest to the canvas centre
+    // first, and take the first one that does not substantially overlap.
+    const candidates = [];
+    const step = 20;
+    for (let y = margin; y + h <= f.h - margin + 0.5; y += step) {
+      for (let x = margin; x + w <= f.w - margin + 0.5; x += step) {
+        const dx = x + w / 2 - f.w / 2;
+        const dy = y + h / 2 - f.h / 2;
+        candidates.push({ x, y, d: dx * dx + dy * dy });
+      }
+    }
+    candidates.sort((a, b) => a.d - b.d);
+
+    for (const c of candidates) {
+      const box = Layout.bbox(c.x, c.y, w, h, 0);
+      if (!existingBoxes.some(b => Layout.conflicts(box, b))) {
+        return { x: c.x, y: c.y, rotation: 0 };
+      }
+    }
+
+    return null;
+  },
+
+  /**
    * Place instances in the canvas without changing their sizes.
    *
    * Main objects are laid out in a row (up to 3) and never overlap.
@@ -200,40 +342,47 @@ const Layout = (typeof globalThis !== 'undefined' ? globalThis : window).Layout 
     const f = Layout.FORMATS[format] || Layout.FORMATS['1000x1000'];
     const k = scale || 1;
     const result = instances.map(i => Object.assign({}, i));
-    const mains = result.filter(i => i.role === 'main');
     const backs = result.filter(i => i.role === 'background');
+
+    // --- main objects: best grid for the current count, centered ---
+    const margin = Layout.MARGIN;
+    const gap = Layout.GAP * k;
+    const plan = Layout.planMain(result, format, getSize);
+
+    if (plan.rows.length) {
+      const rowWidths = plan.rows.map(row =>
+        row.reduce((sum, item) => sum + item.w * k, 0) +
+        gap * Math.max(0, row.length - 1)
+      );
+      const rowHeights = plan.rows.map(row =>
+        row.reduce((max, item) => Math.max(max, item.h * k), 0)
+      );
+      const totalW = Math.max.apply(null, rowWidths);
+      const totalH = rowHeights.reduce((sum, h) => sum + h, 0) +
+        gap * Math.max(0, rowHeights.length - 1);
+
+      let cursorY = Math.max(margin, (f.h - totalH) / 2);
+      for (let r = 0; r < plan.rows.length; r++) {
+        const row = plan.rows[r];
+        const rowWidth = rowWidths[r];
+        const rowHeight = rowHeights[r];
+        let cursorX = Math.max(margin, (f.w - rowWidth) / 2);
+
+        for (const item of row) {
+          item.inst.x = cursorX;
+          item.inst.y = cursorY + (rowHeight - item.h * k) / 2;
+          item.inst.rotation = 0;
+          cursorX += item.w * k + gap;
+        }
+        cursorY += rowHeight + gap;
+      }
+    }
 
     /** Intrinsic size multiplied by the composition scale. */
     const scaledSize = (inst) => {
       const s = getSize(inst);
       return s ? { w: s.w * k, h: s.h * k } : null;
     };
-
-    // --- main objects: horizontal band, centered, no overlap ---
-    const margin = Layout.MARGIN;
-    const gap = Layout.GAP;
-
-    const sizes = mains.map(m => scaledSize(m)).filter(Boolean);
-    const totalW = sizes.reduce((s, sz) => s + sz.w, 0) + gap * Math.max(0, sizes.length - 1);
-
-    // Only the main objects decide where the band sits: a tall background
-    // layer must not push the main row towards the top edge.
-    const mainH = sizes.reduce((m, sz) => Math.max(m, sz.h), 0);
-
-    let cursorX = margin;
-    if (totalW + margin * 2 <= f.w) {
-      cursorX = Math.max(margin, Math.round((f.w - totalW) / 2));
-    }
-    const bandY = Math.max(margin, Math.round((f.h - mainH) / 2));
-
-    for (const m of mains) {
-      const size = scaledSize(m);
-      if (!size) continue;
-      m.x = cursorX;
-      m.y = bandY;
-      m.rotation = 0;
-      cursorX += size.w + gap;
-    }
 
     // --- background objects: a row behind the main objects ---
     // They are placed above the bottom edge, so they stay visible; being

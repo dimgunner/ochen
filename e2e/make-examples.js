@@ -41,10 +41,8 @@ async function setSelect(page, value) {
     process.exit(2);
   }
 
-  const execPath = process.env.CHROMIUM_PATH
-    || '/root/.cache/ms-playwright/chromium-1226/chrome-linux64/chrome';
-  const launchOptions = {};
-  if (fs.existsSync(execPath)) launchOptions.executablePath = execPath;
+  const execPath = process.env.CHROMIUM_PATH || '';
+  const launchOptions = execPath ? { executablePath: execPath } : {};
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
 

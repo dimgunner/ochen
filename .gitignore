@@ -8,6 +8,8 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+backend/db.sqlite3
+backend/staticfiles/
 
 # Node
 node_modules/

@@ -74,6 +74,26 @@ def is_configured():
     return bool(cfg['base_url'] and cfg['model'] and cfg['api_key'])
 
 
+PROVIDER_NAMES = {
+    'api.openai.com': 'OpenAI',
+    'router.huggingface.co': 'Hugging Face Router',
+    'api.sambanova.ai': 'SambaNova',
+    'api.mistral.ai': 'Mistral',
+    'api.deepseek.com': 'DeepSeek',
+    'api.fireworks.ai': 'Fireworks AI',
+    'generativelanguage.googleapis.com': 'Google Gemini',
+    'api.cloudflare.com': 'Cloudflare Workers AI',
+}
+
+
+def provider_name(base_url):
+    """Human-readable provider name for a configured base URL."""
+    from urllib.parse import urlparse
+
+    host = urlparse(base_url or '').hostname or (base_url or '')
+    return PROVIDER_NAMES.get(host, host or 'unknown')
+
+
 def build_catalog(variants):
     """
     Build a compact catalog for the prompt.
@@ -184,7 +204,9 @@ def call_llm(text, catalog, max_objects, timeout):
         body = json.loads(resp.read().decode('utf-8'))
 
     content = body['choices'][0]['message']['content']
-    return parse_json_object(content)
+    # The caller expects a (payload, errors) tuple. Transport and parsing
+    # failures are raised, so there are no non-fatal errors at this point.
+    return parse_json_object(content), []
 
 
 def parse_json_object(content):

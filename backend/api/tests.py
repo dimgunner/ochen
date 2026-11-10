@@ -1,7 +1,8 @@
 import json
 from unittest.mock import patch
 
-from django.test import TestCase, Client
+from django.core.cache import cache
+from django.test import SimpleTestCase, Client, override_settings
 
 from . import fallback
 from . import llm
@@ -42,9 +43,48 @@ MANIFEST = {
 }
 
 
-class ApiTest(TestCase):
+class ApiTest(SimpleTestCase):
     def setUp(self):
         self.client = Client()
+        cache.clear()
+
+    @override_settings(MAX_INPUT_CHARS=5)
+    def test_interpret_metaphor_rejects_long_text(self):
+        response = self.client.post(
+            '/api/interpret-metaphor/',
+            data=json.dumps({'text': 'слишком длинный текст'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 413)
+        self.assertEqual(json.loads(response.content)['max_length'], 5)
+
+    @override_settings(MAX_REQUEST_BYTES=10)
+    def test_interpret_metaphor_rejects_large_body(self):
+        response = self.client.post(
+            '/api/interpret-metaphor/',
+            data=json.dumps({'text': 'x' * 100}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 413)
+
+    @override_settings(API_RATE_LIMIT=2, API_RATE_WINDOW=60)
+    def test_interpret_metaphor_rate_limit(self):
+        payload = json.dumps({'text': 'книга'})
+        for _ in range(2):
+            response = self.client.post(
+                '/api/interpret-metaphor/', data=payload,
+                content_type='application/json',
+            )
+            self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            '/api/interpret-metaphor/', data=payload,
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 429)
+        self.assertIn('Retry-After', response)
+
+    def test_health_rejects_post(self):
+        self.assertEqual(self.client.post('/api/health/').status_code, 405)
 
     def test_health(self):
         response = self.client.get('/api/health/')
@@ -116,7 +156,7 @@ class ApiTest(TestCase):
         self.assertEqual(response.status_code, 405)
 
 
-class LlmProxyTest(TestCase):
+class LlmProxyTest(SimpleTestCase):
     def setUp(self):
         self.allowed = {'kniga', 'moneta', 'telefon', 'lampa'}
 
@@ -198,8 +238,10 @@ class LlmProxyTest(TestCase):
             'LLM_API_KEY': 'secret',
         }, clear=False):
             with patch.object(urllib.request, 'urlopen', fake_urlopen):
-                llm_module.call_llm('учёба', [], 3, 5)
+                result, errors = llm_module.call_llm('учёба', [], 3, 5)
 
+        self.assertEqual(result, {'objects': []})
+        self.assertEqual(errors, [])
         self.assertIn('https://example.test/v1/chat/completions', captured['url'])
 
         sent = json.loads(captured['body'])
@@ -225,7 +267,59 @@ class LlmProxyTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['source'], 'llm')
         self.assertEqual(data['objects'][0]['assetId'], 'kniga')
+        self.assertTrue(any(o['role'] == 'background' for o in data['objects']))
+        info = data['llm_info']
+        self.assertEqual(info['provider'], 'example.test')
+        self.assertEqual(info['model'], 'test-model')
+        self.assertEqual(info['response']['objects'][0]['assetId'], 'kniga')
+        self.assertEqual(info['background_source'], 'local_fallback')
+        self.assertEqual(info['background_service'], 'fallback.pick_background')
         call.assert_called_once()
+
+    def test_llm_info_reports_model_chosen_background(self):
+        with patch.dict('os.environ', {
+            'LLM_BASE_URL': 'https://example.test/v1',
+            'LLM_MODEL': 'test-model',
+            'LLM_API_KEY': 'secret',
+        }, clear=False):
+            with patch('api.llm.call_llm') as call:
+                call.return_value = ({'objects': [
+                    {'assetId': 'kniga', 'role': 'main', 'reason': 'ok'},
+                    {'assetId': 'papka', 'role': 'background', 'reason': 'ok'},
+                ]}, [])
+                response = self.client.post(
+                    '/api/interpret-metaphor/',
+                    data=json.dumps({'text': 'обучение'}),
+                    content_type='application/json',
+                )
+        data = json.loads(response.content)
+        info = data['llm_info']
+        self.assertEqual(info['background_source'], 'llm')
+        self.assertEqual(info['background_asset'], 'papka')
+        self.assertEqual(info['background_service'], 'LLM')
+
+    def test_llm_response_gets_a_background_when_model_omits_it(self):
+        with patch.dict('os.environ', {
+            'LLM_BASE_URL': 'https://example.test/v1',
+            'LLM_MODEL': 'test-model',
+            'LLM_API_KEY': 'secret',
+        }, clear=False):
+            with patch('api.llm.call_llm') as call:
+                call.return_value = ({'objects': [
+                    {'assetId': 'kniga', 'role': 'main', 'reason': 'ok'},
+                    {'assetId': 'moneta', 'role': 'main', 'reason': 'ok'},
+                ]}, [])
+                response = self.client.post(
+                    '/api/interpret-metaphor/',
+                    data=json.dumps({'text': 'финансы и обучение'}),
+                    content_type='application/json',
+                )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        mains = {o['assetId'] for o in data['objects'] if o['role'] == 'main'}
+        backgrounds = [o['assetId'] for o in data['objects'] if o['role'] == 'background']
+        self.assertEqual(len(backgrounds), 1)
+        self.assertNotIn(backgrounds[0], mains)
 
     def test_endpoint_falls_back_when_llm_fails(self):
         with patch.dict('os.environ', {
@@ -263,7 +357,7 @@ class LlmProxyTest(TestCase):
         self.assertNotIn('alien', [o['assetId'] for o in data['objects']])
 
 
-class FallbackTest(TestCase):
+class FallbackTest(SimpleTestCase):
     def test_match_by_tag(self):
         index = fallback.build_index(MANIFEST['variants'])
         matched = fallback.match('финансы и деньги', index, 3)

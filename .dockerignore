@@ -1,5 +1,6 @@
 .env
 .git
+.github
 .gitignore
 __pycache__
 *.pyc
@@ -10,5 +11,14 @@ env/
 venv/
 .venv/
 node_modules/
+package.json
+package-lock.json
 .DS_Store
 *.log
+misc/
+plan/
+e2e/
+examples/
+media/
+screenshot.png
+README.md

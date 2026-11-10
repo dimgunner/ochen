@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Django tests
+        working-directory: backend
+        run: python manage.py test
+
+  frontend-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Front-end unit tests
+        run: node e2e/unit-tests.js
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Install Playwright
+        run: |
+          npm install
+          npx playwright install --with-deps chromium firefox
+      - name: Start service
+        working-directory: backend
+        env:
+          DJANGO_DEBUG: "1"
+          DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+        run: |
+          python manage.py migrate --noinput
+          python manage.py runserver 127.0.0.1:8000 &
+          for i in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:8000/api/health/ && break
+            sleep 1
+          done
+      - name: E2E checks
+        run: node e2e/responsive-check.js http://127.0.0.1:8000/
+      - name: Behaviour checks
+        run: node e2e/feature-check.js http://127.0.0.1:8000/
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t ochen-ci .

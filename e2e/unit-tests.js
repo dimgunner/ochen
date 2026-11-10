@@ -23,6 +23,7 @@ function loadModule(file, exportName) {
 
 const PaletteEngine = loadModule('palette-engine.js', 'PaletteEngine');
 const Layout = loadModule('layout-engine.js', 'Layout');
+const SceneStore = loadModule('scene-store.js', 'SceneStore');
 
 let passed = 0;
 let failed = 0;
@@ -171,18 +172,70 @@ test('checkFit accepts a large object because the composition may be scaled', ()
   assert(res.scale < 1, 'a scale factor is reported: ' + res.scale);
 });
 
-test('checkFit rejects a row that stays too wide at the minimum scale', () => {
-  // Ten wide objects: even at the 5% floor the row does not fit
-  const instances = [];
-  const sizes = {};
-  for (let i = 0; i < 10; i++) {
-    const n = 'Объект' + i;
-    instances.push({ name: n, size: 'L', role: 'main' });
-    sizes[n] = { w: 2000, h: 2000 };
-  }
+test('checkFit rejects an object that stays too large at the minimum scale', () => {
+  // Even at the 5% floor a 50000x50000 object cannot fit.
+  const instances = [{ name: 'Гигант', size: 'L', role: 'main' }];
+  const sizes = { 'Гигант': { w: 50000, h: 50000 } };
   const res = Layout.checkFit(instances, '1000x1000', (i) => sizes[i.name]);
   assert(!res.ok, 'must not fit: ' + res.reason);
-  assert(res.reason.indexOf('Объект0') !== -1, 'reason names the objects');
+  assert(res.reason.indexOf('Гигант') !== -1, 'reason names the object');
+});
+
+test('planMain prefers 2+1 for three large objects in a square', () => {
+  const instances = [];
+  const sizes = {};
+  for (const n of ['А', 'Б', 'В']) {
+    instances.push({ name: n, size: 'L', role: 'main' });
+    sizes[n] = { w: 900, h: 900 };
+  }
+  const plan = Layout.planMain(instances, '1000x1000', (i) => sizes[i.name]);
+  assertEqual(plan.columns, 2, 'two columns');
+  assertEqual(plan.rows.length, 2, 'two rows');
+  assert(plan.scale > 0.5, 'scale is much better than a row: ' + plan.scale);
+});
+
+test('planMain uses a 2x2 grid for four objects in a square', () => {
+  const instances = [];
+  const sizes = {};
+  for (const n of ['А', 'Б', 'В', 'Г']) {
+    instances.push({ name: n, size: 'L', role: 'main' });
+    sizes[n] = { w: 900, h: 900 };
+  }
+  const plan = Layout.planMain(instances, '1000x1000', (i) => sizes[i.name]);
+  assertEqual(plan.columns, 2, 'two columns');
+  assertEqual(plan.rows.length, 2, 'two rows');
+});
+
+test('planMain prefers a column for a portrait format', () => {
+  const instances = [];
+  const sizes = {};
+  for (const n of ['А', 'Б', 'В']) {
+    instances.push({ name: n, size: 'S', role: 'main' });
+    sizes[n] = { w: 500, h: 300 };
+  }
+  const plan = Layout.planMain(instances, '800x1200', (i) => sizes[i.name]);
+  assertEqual(plan.columns, 1, 'one column');
+  assertEqual(plan.rows.length, 3, 'three rows');
+});
+
+test('a 2x2 grid keeps all main objects inside and non-overlapping', () => {
+  const instances = [];
+  const sizes = {};
+  for (const n of ['А', 'Б', 'В', 'Г']) {
+    instances.push({ name: n, size: 'L', role: 'main', x: 0, y: 0, rotation: 0 });
+    sizes[n] = { w: 900, h: 900 };
+  }
+  const fit = Layout.checkFit(instances, '1000x1000', (i) => sizes[i.name]);
+  assert(fit.ok, 'grid must fit: ' + fit.reason);
+  const placed = Layout.place(instances, '1000x1000', (i) => sizes[i.name], fit.scale);
+  const boxes = placed.filter(p => p.role === 'main')
+    .map(p => Layout.bbox(p.x, p.y, 900 * fit.scale, 900 * fit.scale, p.rotation));
+  for (const box of boxes) assert(Layout.fitsInside(box, '1000x1000'), 'inside the canvas');
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      assert(!Layout.conflicts(boxes[i], boxes[j]), 'no overlap');
+    }
+  }
 });
 
 test('checkFit accepts a wide row because the composition is scaled', () => {
@@ -423,6 +476,93 @@ test('exportTransform and transform agree on the centre', () => {
   const b = applyTransform(Layout.exportTransform(inst, size, k), size.w * k / 2, size.h * k / 2);
   assert(Math.abs(a[0] - b[0]) < 0.5 && Math.abs(a[1] - b[1]) < 0.5,
     'same centre: ' + a + ' vs ' + b);
+});
+
+// ------------------------------------------------------- incremental layout
+
+test('placeNew keeps existing main objects untouched', () => {
+  const existing = { name: 'Книга', role: 'main', x: 123, y: 45, rotation: 17 };
+  const added = { name: 'Монета', role: 'main' };
+  const sizes = { 'Книга': { w: 300, h: 200 }, 'Монета': { w: 150, h: 100 } };
+  const before = JSON.stringify(existing);
+  const pos = Layout.placeNew(added, [existing], '1000x1000', (i) => sizes[i.name], 1);
+  assert(pos, 'a free position exists');
+  assertEqual(JSON.parse(before), existing, 'existing object is not modified');
+  const box = Layout.bbox(pos.x, pos.y, 150, 100, 0);
+  assert(Layout.fitsInside(box, '1000x1000'), 'new object is inside the canvas');
+  assert(!Layout.conflicts(box, Layout.bbox(123, 45, 300, 200, 17)), 'new object does not conflict');
+});
+
+test('placeNew returns null when no free spot exists', () => {
+  const existing = { name: 'Большой', role: 'main', x: 0, y: 0, rotation: 0 };
+  const added = { name: 'Второй', role: 'main' };
+  const sizes = { 'Большой': { w: 1000, h: 1000 }, 'Второй': { w: 1000, h: 1000 } };
+  const pos = Layout.placeNew(added, [existing], '1000x1000', (i) => sizes[i.name], 1);
+  assertEqual(pos, null);
+});
+
+test('clampToCanvas keeps a rotated object inside', () => {
+  const p = Layout.clampToCanvas(-400, -300, 300, 200, 45, '1000x1000');
+  const box = Layout.bbox(p.x, p.y, 300, 200, 45);
+  assert(Layout.fitsInside(box, '1000x1000'), 'clamped box is inside');
+});
+
+// ------------------------------------------------------- stored scene guard
+
+test('scene validation accepts a valid payload', () => {
+  const data = {
+    scene: {
+      instances: [{ instanceId: 'a', assetId: 'kniga', role: 'main', state: 'main',
+        size: 'L', x: 10, y: 20, rotation: 5, name: 'Книга' }],
+      format: { w: 1200, h: 630 },
+      scale: 0.8,
+    },
+    currentPalette: 'warm',
+    userPalettes: [],
+  };
+  const result = SceneStore.validate(data);
+  assert(result, 'payload is accepted');
+  assertEqual(result.data.scene.format, { w: 1200, h: 630 });
+  assertEqual(result.data.scene.instances[0].rotation, 5);
+  assertEqual(result.dropped, 0);
+});
+
+test('scene validation drops malformed instances', () => {
+  const data = {
+    scene: {
+      instances: [
+        { instanceId: 'ok', assetId: 'kniga', role: 'main', state: 'main',
+          size: 'L', x: 0, y: 0, name: 'Книга' },
+        { instanceId: 'bad', assetId: 'kniga', role: 'main', state: 'main',
+          size: 'L', x: 'nope', y: 0, name: 'Книга' },
+      ],
+      format: { w: 1000, h: 1000 },
+      scale: 1,
+    },
+  };
+  const result = SceneStore.validate(data);
+  assert(result, 'valid instances remain');
+  assertEqual(result.data.scene.instances.length, 1);
+  assertEqual(result.dropped, 1);
+});
+
+test('scene validation rejects a broken scene container', () => {
+  assertEqual(SceneStore.validate(null), null);
+  assertEqual(SceneStore.validate({ scene: { instances: 'nope' } }), null);
+});
+
+test('scene validation rejects an invalid user palette', () => {
+  const data = {
+    scene: { instances: [], format: { w: 1000, h: 1000 }, scale: 1 },
+    userPalettes: [
+      { id: 'u1', name: 'Bad', background: ['#fff'], object: ['#000'] },
+      { id: 'u2', name: 'Good', background: ['#111111', '#222222', '#333333', '#444444'],
+        object: ['#555555', '#666666', '#777777', '#888888'] },
+    ],
+  };
+  const result = SceneStore.validate(data);
+  assertEqual(result.data.userPalettes.length, 1);
+  assertEqual(result.data.userPalettes[0].id, 'u2');
 });
 
 console.log('\n' + passed + '/' + (passed + failed) + ' unit tests passed');

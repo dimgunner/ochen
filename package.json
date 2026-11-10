@@ -1,0 +1,14 @@
+{
+  "name": "ochen-svg-illustration-builder",
+  "private": true,
+  "description": "Local unit and end-to-end checks for the SVG illustration builder",
+  "scripts": {
+    "test:unit": "node e2e/unit-tests.js",
+    "test:e2e": "node e2e/responsive-check.js",
+    "test:features": "node e2e/feature-check.js",
+    "examples": "node e2e/make-examples.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.0"
+  }
+}
