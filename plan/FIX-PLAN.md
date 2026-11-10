@@ -622,9 +622,9 @@ backend работает на `urllib`.
 Проверки на момент выполнения:
 
 - `node e2e/unit-tests.js` — 47/47;
-- `cd backend && python3 manage.py test api` — 35/35;
+- `cd backend && python3 manage.py test api` — 38/38;
 - `node e2e/responsive-check.js` — 6/6 (Chromium и Firefox, три viewport);
-- `node e2e/feature-check.js` — 36/36;
+- `node e2e/feature-check.js` — 37/37;
 - `docker build` и запуск контейнера с `gunicorn` + whitenoise — успешно,
   `/api/health/` и статика отвечают 200, `/admin/` — 404, `db.sqlite3` не создаётся,
   лимит длины текста возвращает 413.

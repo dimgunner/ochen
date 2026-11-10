@@ -94,6 +94,12 @@ const app = createApp({
     mainCount() {
       return this.countMains(this.scene.instances);
     },
+    /** Built-in and user palettes, sorted by display name. */
+    paletteOptions() {
+      return this.palettes.concat(this.userPalettes).slice().sort((a, b) =>
+        String(a.name || '').localeCompare(String(b.name || ''), 'ru', { sensitivity: 'base' })
+      );
+    },
     llmResponseText() {
       if (!this.llmInfo || !this.llmInfo.response) return '';
       return JSON.stringify(this.llmInfo.response, null, 2);
@@ -921,9 +927,8 @@ const app = createApp({
           <div class="panel-section">
             <div class="panel-title">Палитры</div>
             <div class="field-row">
-              <select v-model="currentPalette" style="width:100%">
-                <option v-for="p in palettes" :key="p.id" :value="p.id">{{p.name}}</option>
-                <option v-for="p in userPalettes" :key="p.id" :value="p.id">{{p.name}}</option>
+              <select id="palette" v-model="currentPalette" style="width:100%">
+                <option v-for="p in paletteOptions" :key="p.id" :value="p.id">{{p.name}}</option>
               </select>
             </div>
             <div class="field-row">

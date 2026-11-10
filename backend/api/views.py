@@ -168,7 +168,7 @@ def interpret_metaphor(request):
                     'llm_info': {
                         'provider': llm.provider_name(cfg['base_url']),
                         'model': cfg['model'],
-                        'base_url': cfg['base_url'],
+                        'base_url': llm.display_base_url(cfg['base_url']),
                         'response': raw,
                         'background_source': background_source,
                         'background_asset': background_asset,

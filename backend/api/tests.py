@@ -160,6 +160,17 @@ class LlmProxyTest(SimpleTestCase):
     def setUp(self):
         self.allowed = {'kniga', 'moneta', 'telefon', 'lampa'}
 
+    def test_display_base_url_masks_account_id(self):
+        url = 'https://api.cloudflare.com/client/v4/accounts/abc123def456/ai/v1'
+        self.assertEqual(
+            llm.display_base_url(url),
+            'https://api.cloudflare.com/client/v4/accounts/account_id/ai/v1',
+        )
+
+    def test_display_base_url_keeps_urls_without_accounts(self):
+        url = 'https://api.example.test/v1'
+        self.assertEqual(llm.display_base_url(url), url)
+
     def test_validate_drops_unknown_ids(self):
         raw = {'objects': [
             {'assetId': 'kniga', 'role': 'main'},
@@ -297,6 +308,26 @@ class LlmProxyTest(SimpleTestCase):
         self.assertEqual(info['background_source'], 'llm')
         self.assertEqual(info['background_asset'], 'papka')
         self.assertEqual(info['background_service'], 'LLM')
+
+    def test_llm_info_masks_account_id_in_base_url(self):
+        with patch.dict('os.environ', {
+            'LLM_BASE_URL': 'https://api.cloudflare.com/client/v4/accounts/secret-account/ai/v1',
+            'LLM_MODEL': 'test-model',
+            'LLM_API_KEY': 'secret',
+        }, clear=False):
+            with patch('api.llm.call_llm') as call:
+                call.return_value = ({'objects': [
+                    {'assetId': 'kniga', 'role': 'main', 'reason': 'ok'},
+                ]}, [])
+                response = self.client.post(
+                    '/api/interpret-metaphor/',
+                    data=json.dumps({'text': 'обучение'}),
+                    content_type='application/json',
+                )
+        data = json.loads(response.content)
+        base_url = data['llm_info']['base_url']
+        self.assertIn('/accounts/account_id/', base_url)
+        self.assertNotIn('secret-account', base_url)
 
     def test_llm_response_gets_a_background_when_model_omits_it(self):
         with patch.dict('os.environ', {

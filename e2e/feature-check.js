@@ -107,6 +107,13 @@ async function exportText(page) {
   await page.waitForSelector('.app-main');
   await page.waitForTimeout(500);
 
+  const paletteNames = await page.$$eval('#palette option', options =>
+    options.map(option => option.textContent.trim()));
+  const sortedPaletteNames = paletteNames.slice().sort((a, b) =>
+    a.localeCompare(b, 'ru', { sensitivity: 'base' }));
+  check('palette options are sorted alphabetically',
+    paletteNames.join('|') === sortedPaletteNames.join('|'), paletteNames.join(', '));
+
   // 1. Synonyms in the component list.
   await clearState(page);
   await addFromList(page, 'flowers, phone', 'S');

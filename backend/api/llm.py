@@ -94,6 +94,19 @@ def provider_name(base_url):
     return PROVIDER_NAMES.get(host, host or 'unknown')
 
 
+def display_base_url(base_url):
+    """
+    Mask account identifiers in a provider URL.
+
+    Cloudflare and similar providers put the account id in the path:
+    /accounts/<id>/ai/v1. The UI must not expose it, so every such segment
+    is replaced with the literal placeholder "account_id".
+    """
+    import re
+
+    return re.sub(r'/accounts/[^/]+/', '/accounts/account_id/', base_url or '')
+
+
 def build_catalog(variants):
     """
     Build a compact catalog for the prompt.
